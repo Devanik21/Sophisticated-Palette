@@ -205,7 +205,7 @@ st.markdown("""
 # Header
 st.markdown("""
 <div class="vintage-header">
-    <div class="main-title">LA GIOCONDA</div>
+    <div class="main-title">Sophisticated Palette</div>
     <div class="subtitle">Portrait of Lisa Gherardini</div>
     <div class="attribution">Leonardo da Vinci • c. 1503–1519</div>
 </div>
