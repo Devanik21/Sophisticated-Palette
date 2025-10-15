@@ -114,9 +114,18 @@ st.markdown("""
         font-weight: 400 !important;
     }
     
-    /* Sliders */
+    /* Sliders - remove red highlights */
     .stSlider [data-baseweb="slider"] {
         background: #8b6c42;
+    }
+    
+    .stSlider [data-baseweb="slider"] [role="slider"] {
+        background-color: #d4af37 !important;
+        border: 2px solid #8b6c42 !important;
+    }
+    
+    .stSlider [data-baseweb="slider"] [data-testid="stTickBar"] {
+        background: #8b6c42 !important;
     }
     
     /* Image frame */
