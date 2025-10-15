@@ -39,8 +39,8 @@ st.markdown("""
         text-align: center;
         padding: 3rem 2rem 2rem;
         background: linear-gradient(180deg, rgba(139,108,66,0.15) 0%, transparent 100%);
-        border-bottom: 3px double #3d2a11;
-        border-top: 3px double #3d2a11;
+        border-bottom: 3px double #96754a;
+        border-top: 3px double #96754a;
         margin-bottom: 2rem;
         position: relative;
     }
@@ -50,7 +50,7 @@ st.markdown("""
         content: "❦";
         position: absolute;
         font-size: 2rem;
-        color: #3d2a11;
+        color: #96754a;
         opacity: 0.6;
     }
     
@@ -88,7 +88,7 @@ st.markdown("""
     /* Sidebar vintage styling */
     [data-testid="stSidebar"] {
         background: linear-gradient(180deg, #1a1008 0%, #0f0805 100%);
-        border-right: 2px solid #3d2a11;
+        border-right: 2px solid #96754a;
     }
     
     [data-testid="stSidebar"] > div:first-child {
@@ -102,7 +102,7 @@ st.markdown("""
         text-align: center;
         margin-bottom: 1.5rem;
         padding-bottom: 1rem;
-        border-bottom: 2px solid #3d2a11;
+        border-bottom: 2px solid #96754a;
         letter-spacing: 0.1em;
     }
     
@@ -126,7 +126,7 @@ st.markdown("""
     }
     
     .stSlider [data-baseweb="slider"] [data-testid="stTickBar"] {
-        background: #3d2a11 !important;
+        background: #96754a !important;
     }
     
     /* Remove red focus/active states */
@@ -135,14 +135,14 @@ st.markdown("""
     }
     
     .stSlider [data-baseweb="slider"] > div:first-child > div {
-        background: #3d2a11 !important;
+        background: #96754a !important;
     }
     
     /* Image frame */
     .image-container {
         padding: 2rem;
         background: linear-gradient(135deg, rgba(139,108,66,0.1) 0%, rgba(139,108,66,0.05) 100%);
-        border: 4px solid #3d2a11;
+        border: 4px solid #96754a;
         border-radius: 4px;
         box-shadow: 
             inset 0 0 40px rgba(0,0,0,0.5),
@@ -168,7 +168,7 @@ st.markdown("""
         text-align: center;
         padding: 2rem;
         margin-top: 2rem;
-        border-top: 3px double #3d2a11;
+        border-top: 3px double #96754a;
         font-family: 'EB Garamond', serif;
         color: #9d8560;
         font-size: 0.95rem;
@@ -176,7 +176,7 @@ st.markdown("""
     }
     
     .ornament {
-        color: #3d2a11;
+        color: #96754a;
         font-size: 1.5rem;
         margin: 0 1rem;
     }
@@ -185,7 +185,7 @@ st.markdown("""
     hr {
         border: none;
         height: 2px;
-        background: linear-gradient(to right, transparent, #3d2a11, transparent);
+        background: linear-gradient(to right, transparent, #96754a, transparent);
         margin: 2rem 0;
     }
     
