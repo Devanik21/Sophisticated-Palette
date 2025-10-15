@@ -119,7 +119,7 @@ st.markdown("""
     
     /* Sliders - vintage styling */
     .stSlider [data-baseweb="slider"] {
-        background: rgba(139, 108, 66, 0.3) !important;
+        background: transparent !important;
     }
     
     .stSlider [data-baseweb="slider"] [role="slider"] {
