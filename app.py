@@ -25,7 +25,10 @@ def fetch_image(url: str) -> Image.Image:
 def load_font(size=20):
     # Try to load a bundled/available truetype. If not found, fallback to default.
     try:
-        return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf", size)
+      image = Image.open('1449px-Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg')
+      st.image(image, caption='A beautiful image', use_column_width=True)
+      
+        
     except Exception:
         return ImageFont.load_default()
 
