@@ -114,17 +114,27 @@ st.markdown("""
         font-weight: 400 !important;
     }
     
-    /* Sliders - remove red highlights */
+    /* Sliders - vintage styling */
     .stSlider [data-baseweb="slider"] {
-        background: #8b6c42;
+        background: rgba(139, 108, 66, 0.3) !important;
     }
     
     .stSlider [data-baseweb="slider"] [role="slider"] {
         background-color: #d4af37 !important;
-        border: 2px solid #8b6c42 !important;
+        border: none !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.5) !important;
     }
     
     .stSlider [data-baseweb="slider"] [data-testid="stTickBar"] {
+        background: #8b6c42 !important;
+    }
+    
+    /* Remove red focus/active states */
+    .stSlider div[data-baseweb="slider"] div {
+        background-color: transparent !important;
+    }
+    
+    .stSlider [data-baseweb="slider"] > div:first-child > div {
         background: #8b6c42 !important;
     }
     
@@ -242,17 +252,19 @@ def process_image(img, blur_amt, vig_str, tint_op, bright, cont, patina, texture
         sepia = Image.new("RGB", img.size, (112, 66, 20))
         img = Image.blend(img, sepia, tint_op)
     
-    # Vignette
+    # Vignette - softer, edges only
     if vig_str > 0:
         width, height = img.size
-        vignette_mask = Image.new("L", (width, height), 0)
+        vignette_mask = Image.new("L", (width, height), 255)
         draw = ImageDraw.Draw(vignette_mask)
         
-        for i in range(min(width, height) // 2):
-            alpha = int(255 * (1 - (i / (min(width, height) / 2)) ** 2) * vig_str)
-            draw.ellipse([i, i, width-i, height-i], fill=alpha)
+        # Only darken the outer edges, not the center
+        edge_size = int(min(width, height) * 0.25)
+        for i in range(edge_size):
+            alpha = int(255 - (255 * (i / edge_size) * vig_str * 0.5))
+            draw.rectangle([i, i, width-i, height-i], outline=alpha)
         
-        dark = Image.new("RGB", img.size, (10, 5, 0))
+        dark = Image.new("RGB", img.size, (15, 10, 5))
         img = Image.composite(img, dark, vignette_mask)
     
     # Age patina (yellowing)
@@ -287,4 +299,3 @@ st.markdown("""
     <em>"Art is never finished, only abandoned"</em> — Leonardo da Vinci
 </div>
 """, unsafe_allow_html=True)
-
