@@ -5,7 +5,7 @@ from io import BytesIO
 import base64
 
 st.set_page_config(
-    page_title="La Gioconda — Renaissance Gallery",
+    page_title="Sophisticated Palette",
     page_icon="🎨",
     layout="wide"
 )
