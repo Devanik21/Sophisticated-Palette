@@ -9,7 +9,6 @@ import cv2
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
-import mediapipe as mp
 from deepface import DeepFace
 import requests
 # --- END NEW IMPORTS ---
@@ -318,13 +317,10 @@ with st.sidebar:
                                 help="Reimagines the painting in the style of another artwork using Neural Style Transfer.")
 
     enable_super_res = st.checkbox("AI Super-Resolution", help="Upscales the image using an AI model to add detail. Can be slow.")
-    enable_portrait_mode = st.checkbox("AI Portrait Mode", help="Uses AI to detect the subject and blur the background.")
     enable_colorization = st.checkbox("AI Re-Colorization", help="Converts image to B&W, then uses AI to colorize it.")
-    smile_intensity = st.slider("AI Smile Enhance", 0.0, 1.0, 0.0, 0.05, help="Subtly enhances the smile using facial landmark detection. Experimental.")
     crackle_repair_intensity = st.slider("AI Crackle Repair", 0.0, 1.0, 0.0, 0.05, help="Uses an algorithm to detect and repair paint crackle.")
 
     with st.expander("Advanced AI Analysis & Effects"):
-        enable_face_mesh = st.checkbox("Show Facial Landmarks", help="Overlays the detected facial mesh on the image.")
         enable_composition_guide = st.checkbox("Show Composition Guide", help="Draws Rule-of-Thirds lines based on the subject.")
         enable_deep_dream = st.checkbox("Apply 'Deep Dream' Effect", help="A psychedelic effect that enhances patterns the AI sees in the image.")
         analyze_emotion = st.button("Analyze Facial Emotion", help="Uses AI to predict the emotion of the subject.")
@@ -378,13 +374,6 @@ def load_super_res_model():
 @st.cache_resource
 def load_inception_model():
     return tf.keras.applications.InceptionV3(include_top=False, weights='imagenet')
-
-@st.cache_resource
-def get_mediapipe_models():
-    return {
-        "face_mesh": mp.solutions.face_mesh.FaceMesh(static_image_mode=True, max_num_faces=1, min_detection_confidence=0.5),
-        "selfie_segmentation": mp.solutions.selfie_segmentation.SelfieSegmentation(model_selection=0)
-    }
 
 def run_emotion_analysis(img_np_rgb):
     try:
@@ -617,60 +606,12 @@ def process_image_ml(img_pil, params_ml):
             dream_model = tf.keras.Model(inputs=inception_model.input, outputs=layers)
             img_np = run_deep_dream(img_np, dream_model, steps=50, step_size=0.02)
 
-        # AI Portrait Mode
-        if params_ml['portrait_mode']:
-            models = get_mediapipe_models()
-            seg_results = models['selfie_segmentation'].process(img_np)
-            condition = np.stack((seg_results.segmentation_mask,) * 3, axis=-1) > 0.1
-            blurred_img = cv2.GaussianBlur(img_np, (51, 51), 0)
-            img_np = np.where(condition, img_np, blurred_img)
-
         # AI Crackle Repair
         if params_ml['crackle_repair'] > 0:
             gray = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
             edges = cv2.Canny(gray, 50, 150)
             mask = cv2.dilate(edges, np.ones((3,3), np.uint8), iterations=1)
             img_np = cv2.inpaint(img_np, mask, 3, cv2.INPAINT_TELEA)
-
-        # AI Smile Enhance
-        if params_ml['smile_intensity'] > 0:
-            models = get_mediapipe_models()
-            results = models['face_mesh'].process(img_np)
-            if results.multi_face_landmarks:
-                h, w, _ = img_np.shape
-                landmarks = results.multi_face_landmarks[0].landmark
-                # Mouth corners: 61 (right), 291 (left)
-                p_left = landmarks[291]
-                p_right = landmarks[61]
-                
-                flow = np.zeros((h, w, 2), dtype=np.float32)
-                radius = int(w * 0.08)
-                max_shift = int(h * 0.005 * params_ml['smile_intensity'])
-
-                for p in [p_left, p_right]:
-                    center_x, center_y = int(p.x * w), int(p.y * h)
-                    y_coords, x_coords = np.mgrid[0:h, 0:w]
-                    dist_sq = (x_coords - center_x)**2 + (y_coords - center_y)**2
-                    sigma_sq = (radius * 0.5)**2
-                    influence = np.exp(-dist_sq / (2 * sigma_sq))
-                    flow[:, :, 1] -= max_shift * influence
-
-                map_x, map_y = np.meshgrid(np.arange(w), np.arange(h))
-                map_x = map_x.astype(np.float32) + flow[:, :, 0]
-                map_y = map_y.astype(np.float32) + flow[:, :, 1]
-                img_np = cv2.remap(img_np, map_x, map_y, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
-
-        # Facial Landmark Overlay
-        if params_ml['face_mesh']:
-            models = get_mediapipe_models()
-            results = models['face_mesh'].process(img_np)
-            if results.multi_face_landmarks:
-                for face_landmarks in results.multi_face_landmarks:
-                    mp.solutions.drawing_utils.draw_landmarks(
-                        image=img_np, landmark_list=face_landmarks,
-                        connections=mp.solutions.face_mesh.FACEMESH_TESSELATION,
-                        landmark_drawing_spec=mp.solutions.drawing_utils.DrawingSpec(color=(220, 200, 180), thickness=1, circle_radius=1),
-                        connection_drawing_spec=mp.solutions.drawing_utils.DrawingSpec(color=(255, 255, 255), thickness=1, circle_radius=1))
 
         # Composition Guide
         if params_ml['composition_guide']:
@@ -711,10 +652,7 @@ params = {
 params_ml = {
     'style_choice': style_choice,
     'super_res': enable_super_res,
-    'portrait_mode': enable_portrait_mode,
-    'smile_intensity': smile_intensity,
     'crackle_repair': crackle_repair_intensity,
-    'face_mesh': enable_face_mesh,
     'composition_guide': enable_composition_guide,
     'deep_dream': enable_deep_dream,
     'colorization': enable_colorization,
