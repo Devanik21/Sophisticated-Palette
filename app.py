@@ -674,7 +674,7 @@ with col2:
         st.success(f"**Emotion Analysis:** {st.session_state['emotion_results']}")
 
     st.markdown('<div class="image-container">', unsafe_allow_html=True)
-    st.image(processed_ml, use_container_width=True)
+    st.image(processed_ml, width='stretch)
     st.markdown('<div class="caption-text">Oil on poplar panel • 77 cm × 53 cm (30 in × 21 in) • Musée du Louvre, Paris</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
