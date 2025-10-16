@@ -5,5 +5,3 @@ opencv-python-headless
 numpy
 tensorflow
 tensorflow-hub
-mediapipe
-deepface
